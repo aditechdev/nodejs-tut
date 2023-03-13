@@ -1,9 +1,22 @@
 const express = require('express');
+const multer = require('multer');
 require('./config');
 const Product = require('./product');
 
 const app = express();
 app.use(express.json());
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) { 
+            cb(null, "uploads")
+        }, 
+        filename: function (req, file, cb) { 
+
+            cb(null, file.fieldname+"-"+Date.now()+".jpg")
+        }
+    })
+}).single("user_file");
 
 app.post('/create', async(req, res) => {
     let data = new Product(req.body);
@@ -47,6 +60,19 @@ app.get('/search/:key', async (req, res) => {
         }
     );
     res.send(data);
- })
+})
+
+// app.post('upload', await(req, res)=> {
+    
+// })
+
+
+ 
+app.post('/upload', upload, async (req, res) => {
+    res.send("DONE");
+    
+
+});
+
 
 app.listen(4700)
