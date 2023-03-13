@@ -1,9 +1,29 @@
-const os = require('os');
+const express = require('express');
+const EventEmitter = require('events');
 
-// console.log(os);
-// console.log(os.arch());
-// console.log(os.freemem()/(1024*1024*1024));
-// console.log(os.totalmem()/(1024*1024*1024));
-// console.log(os.hostname());
-// console.log(os.platform());
-console.log(os.userInfo());
+
+const event = new EventEmitter();
+let count = 0;
+
+const app = express();
+
+event.on("countApi", () => { 
+    count++;
+    console.log("EVENT CALLED", count);
+})
+app.get('/', (req, res) => { 
+    res.send("API CALLED");
+    event.emit("countApi");
+})
+app.get('/search', (req, res) => { 
+    res.send("Search API CALLED");
+})
+
+app.get('/update', (req, res) => { 
+    res.send("Update API CALLED");
+})
+
+// app.listen(4700, () => {
+//     console.log('App listening on port 4700');
+// });
+app.listen(4700);
